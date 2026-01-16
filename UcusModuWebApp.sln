@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UcusModu.Api", "server\\UcusModu.Api.csproj", "{333521AC-4769-4233-9779-5A461F873DAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{066821FB-4920-4D27-8569-19DF10B8A398}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{28CF7B94-D4B2-4009-8208-920998161626}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{333521AC-4769-4233-9779-5A461F873DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333521AC-4769-4233-9779-5A461F873DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{333521AC-4769-4233-9779-5A461F873DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{333521AC-4769-4233-9779-5A461F873DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{333521AC-4769-4233-9779-5A461F873DAE} = {066821FB-4920-4D27-8569-19DF10B8A398}
+	EndGlobalSection
+EndGlobal
