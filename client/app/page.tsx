@@ -25,10 +25,11 @@ import {
   Login,
   TopNav,
 } from "./components/events";
+import { AdminDashboard } from "./components/admin";
 import { FooterMark, Shell } from "./components/ui";
 import { DEMO_EVENTS, DEMO_ORDERS, DEMO_TICKETS, DEMO_USER } from "./data/demo";
 
-type AppRoute = "landing" | "home" | "event";
+type AppRoute = "landing" | "home" | "event" | "admin";
 type AccountRoute = "/account" | "/account/tickets" | "/account/orders" | "/account/profile";
 type DemoRoute = AppRoute | AccountRoute;
 
@@ -88,6 +89,7 @@ export default function DemoApp() {
   };
 
   const goAccount = (path: AccountRoute = "/account") => setRoute(path);
+  const goAdmin = () => setRoute("admin");
 
   if (route === "landing") {
     return (
@@ -100,6 +102,7 @@ export default function DemoApp() {
       />
     );
   }
+
 
   if (isAccountRoute) {
     return (
@@ -164,12 +167,15 @@ export default function DemoApp() {
         onAccount={() => goAccount("/account")}
       />
 
-      {route === "home" ? (
+     {route === "admin" ? (
+        <AdminDashboard onBack={goEventsHome} />
+      ) : route === "home" ? (
         <EventsHome
           events={DEMO_EVENTS}
           userCity={DEMO_USER.city}
           onOpenEvent={(id) => openEvent(id)}
           onBuy={(id) => buyTicket(id)}
+          onOpenAdmin={goAdmin}
         />
       ) : selectedEvent ? (
         <EventDetail
@@ -183,6 +189,7 @@ export default function DemoApp() {
           events={DEMO_EVENTS}
           onOpenEvent={(id) => openEvent(id)}
           onBuy={(id) => buyTicket(id)}
+          onOpenAdmin={goAdmin}
         />
       )}
 

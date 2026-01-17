@@ -10,12 +10,14 @@ export function Landing({
   userCity,
   onOpenEvent,
   onBuy,
+  onOpenAdmin,
 }: {
   onEnter: () => void;
   events: Event[];
   userCity?: string;
   onOpenEvent: (id: string) => void;
   onBuy: (id: string) => void;
+  onOpenAdmin: () => void;
 }) {
   const [genre, setGenre] = useState<"All" | Event["genre"]>("All");
 
@@ -325,11 +327,13 @@ export function EventsHome({
   userCity,
   onOpenEvent,
   onBuy,
+  onOpenAdmin,
 }: {
   events: Event[];
    userCity?: string;
   onOpenEvent: (id: string) => void;
   onBuy: (id: string) => void;
+  onOpenAdmin: () => void;
 }) {
   const [q, setQ] = useState("");
   const [genre, setGenre] = useState<"All" | Event["genre"]>("All");
@@ -462,7 +466,7 @@ export function EventsHome({
                 Etkinliğini ekle, kontenjan ve bilet satışını panelden yönet.
               </div>
             </div>
-            <PillButton variant="ghost" onClick={() => alert("(Demo) Organizator paneli")}>
+            <PillButton variant="ghost" onClick={onOpenAdmin}>
               Organizator Paneli
             </PillButton>
           </div>
