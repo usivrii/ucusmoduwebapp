@@ -171,12 +171,25 @@ export function Modal({
 
 export function FooterMark() {
   return (
-    <div className="flex items-end justify-between">
-      <div className="inline-flex h-7 w-7 items-center justify-center rounded-full ring-1 ring-white/20">
-        <span className="text-[12px] font-semibold text-white/80">U</span>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="inline-flex h-7 w-7 items-center justify-center rounded-full ring-1 ring-white/20">
+            <span className="text-[12px] font-semibold text-white/80">U</span>
+          </div>
+          <div className="text-[11px] text-white/35">
+            © {new Date().getFullYear()} Uçuş Modu
+          </div>
       </div>
-      <div className="hidden text-[11px] text-white/35 sm:block">
-        © {new Date().getFullYear()} Uçuş Modu
+        <div className="flex flex-wrap items-center gap-3 text-[11px] text-white/50">
+          <button type="button" className="hover:text-white/80">
+            Impressum
+          </button>
+          <button type="button" className="hover:text-white/80">
+            AGB
+          </button>
+          <button type="button" className="hover:text-white/80">
+            Datenschutz
+          </button>
       </div>
     </div>
   );

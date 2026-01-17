@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Chip, Input, Modal, PillButton, Shell, VercelMark, UMark, cn } from "./ui";
+import { Chip, FooterMark, Input, Modal, PillButton, Shell, VercelMark, UMark, cn } from "./ui";
 import { Event, formatDateTR } from "../data/demo";
 
 export function Landing({
@@ -40,16 +40,7 @@ export function Landing({
   }, [events, genre]);
   return (
     <Shell
-      footer={
-        <div className="flex items-end justify-between">
-          <div className="inline-flex h-7 w-7 items-center justify-center rounded-full ring-1 ring-white/20">
-            <span className="text-[12px] font-semibold text-white/80">U</span>
-          </div>
-          <div className="hidden text-[11px] text-white/35 sm:block">
-            © {new Date().getFullYear()} Uçuş Modu
-          </div>
-        </div>
-      }
+        footer={<FooterMark />}
     >
        <div className="py-10">
         <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
@@ -565,8 +556,16 @@ export function EventDetail({
                   <div className="text-[12px] font-medium text-white/85">
                     Organizator Profili
                   </div>
-                  <div className="mt-2 text-[12px] font-medium text-white/90">
-                    {ev.organizer.name}
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <div className="text-[12px] font-medium text-white/90">
+                      {ev.organizer.name}
+                    </div>
+                    <span className="rounded-full bg-white text-black px-2.5 py-0.5 text-[10px] font-semibold">
+                      Doğrulanmış organizatör
+                    </span>
+                    <span className="rounded-full bg-white/[0.02] text-white/70 ring-1 ring-white/12 px-2.5 py-0.5 text-[10px] font-medium">
+                      Kimlik doğrulandı
+                    </span>
                   </div>
                   <p className="mt-2 text-[12px] leading-[1.7] text-white/55">
                     {ev.organizer.description}
@@ -608,7 +607,8 @@ export function EventDetail({
           <div className="border-t border-white/10 px-6 py-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-[12px] text-white/55">
-                Satış & iade koşulları: (Demo) checkout ekranında gösterilir.
+                Satış & iade koşulları: 14 gün içinde koşullu iade, etkinlikten
+                48 saat önce iptal. Dijital biletler e-posta ve panelde görünür.
               </div>
               <button
                 type="button"
@@ -738,8 +738,28 @@ export function Checkout({
               <div className="text-[12px] text-white/55">Toplam</div>
               <div className="text-[14px] font-medium text-white/95">{total}€</div>
             </div>
-            <div className="mt-1 text-[11px] text-white/40">
-              (Demo) Ödeme sağlayıcısı entegrasyonu burada yapılır.
+            <div className="mt-3 grid gap-2 text-[11px] text-white/45">
+              <div>
+                İade & koşullar: 14 gün içinde koşullu iade, etkinlikten 48 saat
+                önce iptal. Sorular için destek@ucusmodu.de.
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-[10px] text-white/60">
+                <span className="rounded-full bg-white/[0.02] ring-1 ring-white/12 px-2.5 py-1">
+                  PCI DSS
+                </span>
+                <span className="rounded-full bg-white/[0.02] ring-1 ring-white/12 px-2.5 py-1">
+                  3D Secure
+                </span>
+                <span className="rounded-full bg-white/[0.02] ring-1 ring-white/12 px-2.5 py-1">
+                  SEPA
+                </span>
+                <span className="rounded-full bg-white/[0.02] ring-1 ring-white/12 px-2.5 py-1">
+                  PayPal
+                </span>
+                <span className="rounded-full bg-white/[0.02] ring-1 ring-white/12 px-2.5 py-1">
+                  giropay
+                </span>
+              </div>
             </div>
           </div>
 
