@@ -1,10 +1,41 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Chip, Input, Modal, PillButton, Shell, VercelMark, UMark, cn } from "./ui";
 import { Event, formatDateTR } from "../data/demo";
 
-export function Landing({ onEnter }: { onEnter: () => void }) {
+export function Landing({
+  onEnter,
+  events,
+  userCity,
+  onOpenEvent,
+  onBuy,
+}: {
+  onEnter: () => void;
+  events: Event[];
+  userCity?: string;
+  onOpenEvent: (id: string) => void;
+  onBuy: (id: string) => void;
+}) {
+  const [genre, setGenre] = useState<"All" | Event["genre"]>("All");
+
+  const popularEvents = useMemo(
+    () =>
+      events
+        .filter((ev) => ev.isPopular)
+        .sort((a, b) => a.dateISO.localeCompare(b.dateISO))
+        .slice(0, 3),
+    [events]
+  );
+
+  const nearbyEvents = useMemo(() => {
+    if (!userCity) return [];
+    return events.filter((ev) => ev.city === userCity);
+  }, [events, userCity]);
+
+  const filtered = useMemo(() => {
+    return events.filter((ev) => (genre === "All" ? true : ev.genre === genre));
+  }, [events, genre]);
   return (
     <Shell
       footer={
@@ -18,32 +49,135 @@ export function Landing({ onEnter }: { onEnter: () => void }) {
         </div>
       }
     >
-      <div className="flex min-h-dvh items-center justify-center">
-        <div className="w-full max-w-[560px] text-center">
-          <div className="mb-10 flex items-center justify-center">
-            <div className="text-[11px] font-semibold tracking-[0.28em] text-white/90">
-              UÇUŞ MODU.
+       <div className="py-10">
+        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+          <div>
+            <div className="mb-6 flex items-center gap-2">
+              <div className="text-[11px] font-semibold tracking-[0.28em] text-white/90">
+                UÇUŞ MODU.
+              </div>
+              <span className="rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-white/70 ring-1 ring-white/10">
+                Almanya odaklı güvenli biletleme
+              </span>
+            </div>
+          
+
+             <h1 className="max-w-[32ch] text-balance text-[22px] font-medium leading-[1.2] text-white/95 sm:text-[26px]">
+              Almanya’daki en popüler gençlik etkinlikleri tek ekranda.
+            </h1>
+
+          <p className="mt-3 max-w-[60ch] text-pretty text-[13px] leading-[1.7] text-white/55">
+              Doğrulanmış organizatörler, şeffaf bilet politikası ve hızlı satın
+              alma ile güvenle etkinlik planla.
+            </p>
+
+
+          <div className="mt-6 flex flex-wrap items-center gap-2">
+              <Chip active={genre === "All"} label="Tümü" onClick={() => setGenre("All")} />
+              <Chip active={genre === "Music"} label="Müzik" onClick={() => setGenre("Music")} />
+              <Chip
+                active={genre === "Workshop"}
+                label="Workshop"
+                onClick={() => setGenre("Workshop")}
+              />
+              <Chip active={genre === "Party"} label="Party" onClick={() => setGenre("Party")} />
+              <Chip
+                active={genre === "Networking"}
+                label="Networking"
+                onClick={() => setGenre("Networking")}
+              />
+            </div>
+
+           <div className="mt-6 flex items-center gap-3">
+              <PillButton variant="primary" onClick={onEnter}>
+                <VercelMark className="h-3.5 w-3.5 text-black" />
+                <span className="ml-2">Etkinliklere Git</span>
+              </PillButton>
+
+              <PillButton variant="ghost" onClick={onEnter}>
+                Tüm Takvimi Gör
+              </PillButton>
             </div>
           </div>
 
-          <h1 className="mx-auto max-w-[34ch] text-balance text-[18px] font-medium leading-[1.35] text-white/95 sm:text-[20px]">
-            Almanya’da gençlere yönelik konser, etkinlik ve organizasyon.
-          </h1>
+          <div className="rounded-3xl bg-white/[0.03] ring-1 ring-white/12 p-5">
+            <div className="text-[12px] font-medium text-white/85">
+              Yaklaşan Popüler Etkinlikler
+            </div>
+            <div className="mt-4 space-y-3">
+              {popularEvents.map((ev) => (
+                <button
+                  key={ev.id}
+                  type="button"
+                  onClick={() => onOpenEvent(ev.id)}
+                  className="w-full rounded-2xl bg-black/40 p-4 text-left ring-1 ring-white/10 transition hover:bg-white/[0.05]"
+                >
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={ev.imageUrl}
+                      alt={ev.title}
+                      className="h-16 w-20 rounded-xl object-cover"
+                    />
+                    <div className="flex-1">
+                      <div className="text-[12px] font-medium text-white/90">
+                        {ev.title}
+                      </div>
+                      <div className="mt-1 text-[11px] text-white/55">
+                        {ev.city} • {formatDateTR(ev.dateISO)} • {ev.time}
+                      </div>
+                      {ev.status === "FewLeft" ? (
+                        <div className="mt-2 text-[11px] font-semibold text-white/90">
+                          Son {ev.stockLeft ?? 5} bilet!
+                        </div>
+                      ) : null}
+                    </div>
+                    <span className="text-[11px] text-white/60">{ev.priceFromEUR}€+</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
-          <p className="mx-auto mt-3 max-w-[52ch] text-pretty text-[12px] leading-[1.6] text-white/55 sm:text-[13px]">
-            Bir başlangıç noktası mı arıyorsun? Etkinlik takvimimize göz at veya
-            hesabınla giriş yapıp biletlerini yönet.
-          </p>
+        <div className="mt-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="rounded-3xl bg-white/[0.03] ring-1 ring-white/12 p-5">
+            <div className="text-[12px] font-medium text-white/85">
+              {userCity ? `${userCity} Yakınında` : "Yakınındaki Etkinlikler"}
+            </div>
+            <p className="mt-2 text-[12px] leading-[1.6] text-white/55">
+              Konumuna en uygun etkinlikleri önceliklendiriyoruz. Şehrini profilinde
+              güncelleyebilirsin.
+            </p>
+            <div className="mt-4 space-y-3">
+              {(nearbyEvents.length ? nearbyEvents : filtered.slice(0, 2)).map((ev) => (
+                <div key={ev.id} className="rounded-2xl bg-black/40 p-4 ring-1 ring-white/10">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-[12px] font-medium text-white/90">
+                        {ev.title}
+                      </div>
+                      <div className="mt-1 text-[11px] text-white/55">
+                        {ev.city} • {ev.venue}
+                      </div>
+                    </div>
+                    <PillButton variant="ghost" onClick={() => onBuy(ev.id)}>
+                      Hızlı Satın Al
+                    </PillButton>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <div className="mt-10 flex items-center justify-center gap-3">
-            <PillButton variant="primary" onClick={onEnter}>
-              <VercelMark className="h-3.5 w-3.5 text-black" />
-              <span className="ml-2">Etkinliklere Git</span>
-            </PillButton>
-
-            <PillButton variant="ghost" onClick={onEnter}>
-              Etkinlikler
-            </PillButton>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {filtered.slice(0, 4).map((ev) => (
+              <EventCard
+                key={ev.id}
+                ev={ev}
+                onOpen={() => onOpenEvent(ev.id)}
+                onBuy={() => onBuy(ev.id)}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -121,7 +255,7 @@ function EventCard({
     ev.status === "SoldOut"
       ? "Tükendi"
       : ev.status === "FewLeft"
-      ? "Az Kaldı"
+       ? `Son ${ev.stockLeft ?? 5} bilet`
       : "Satışta";
 
   return (
@@ -178,7 +312,7 @@ function EventCard({
             onClick={onBuy}
             disabled={ev.status === "SoldOut"}
           >
-            {ev.status === "SoldOut" ? "Bilet Yok" : "Bilet Al"}
+            {ev.status === "SoldOut" ? "Bilet Yok" : "Hızlı Satın Al"}
           </PillButton>
         </div>
       </div>
@@ -188,22 +322,31 @@ function EventCard({
 
 export function EventsHome({
   events,
+  userCity,
   onOpenEvent,
   onBuy,
 }: {
   events: Event[];
+   userCity?: string;
   onOpenEvent: (id: string) => void;
   onBuy: (id: string) => void;
 }) {
   const [q, setQ] = useState("");
   const [genre, setGenre] = useState<"All" | Event["genre"]>("All");
-  const [city, setCity] = useState<"All" | string>("All");
+   const [city, setCity] = useState<"All" | string>(userCity ?? "All");
 
   const cities = useMemo(() => {
     const set = new Set(events.map((e) => e.city));
     return ["All", ...Array.from(set)];
   }, [events]);
-
+ useEffect(() => {
+    if (!userCity) return;
+    if (!cities.includes(userCity)) {
+      setCity("All");
+      return;
+    }
+    setCity((prev) => (prev === "All" ? userCity : prev));
+  }, [cities, userCity]);
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     return events
@@ -219,6 +362,10 @@ export function EventsHome({
       })
       .sort((a, b) => a.dateISO.localeCompare(b.dateISO));
   }, [events, q, genre, city]);
+   const nearby = useMemo(() => {
+    if (!userCity) return [];
+    return events.filter((e) => e.city === userCity);
+  }, [events, userCity]);
 
   return (
     <div className="pt-10">
@@ -228,10 +375,34 @@ export function EventsHome({
             Etkinlikler
           </h1>
           <p className="mx-auto mt-2 max-w-[70ch] text-pretty text-[12px] leading-[1.6] text-white/55 sm:text-[13px]">
-            Konser, festival, parti ve stand-up etkinliklerini keşfet. Biletlerini
-            hızlıca satın al ve hesabından yönet.
+             Müzik, workshop, party ve networking etkinliklerini keşfet. Hızlı satın
+            alma ve güvenli ödeme altyapısıyla biletlerini yönet.
           </p>
         </div>
+
+         {nearby.length ? (
+          <div className="mt-8 rounded-2xl bg-white/[0.02] ring-1 ring-white/12 px-5 py-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-[12px] font-medium text-white/85">
+                  {userCity} yakınında etkinlikler
+                </div>
+                <div className="mt-1 text-[12px] text-white/55">
+                  Konumuna göre önceliklendirilmiş öneriler.
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {nearby.slice(0, 2).map((ev) => (
+                  <Chip
+                    key={ev.id}
+                    label={`${ev.title} • ${formatDateTR(ev.dateISO)}`}
+                    onClick={() => onOpenEvent(ev.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-8 grid gap-3 sm:grid-cols-12">
           <div className="sm:col-span-7">
@@ -240,10 +411,18 @@ export function EventsHome({
           <div className="sm:col-span-5">
             <div className="flex flex-wrap items-center justify-end gap-2">
               <Chip active={genre === "All"} label="Tümü" onClick={() => setGenre("All")} />
-              <Chip active={genre === "Concert"} label="Konser" onClick={() => setGenre("Concert")} />
-              <Chip active={genre === "Festival"} label="Festival" onClick={() => setGenre("Festival")} />
+              <Chip active={genre === "Music"} label="Müzik" onClick={() => setGenre("Music")} />
+              <Chip
+                active={genre === "Workshop"}
+                label="Workshop"
+                onClick={() => setGenre("Workshop")}
+              />
               <Chip active={genre === "Party"} label="Party" onClick={() => setGenre("Party")} />
-              <Chip active={genre === "Comedy"} label="Stand-up" onClick={() => setGenre("Comedy")} />
+               <Chip
+                active={genre === "Networking"}
+                label="Networking"
+                onClick={() => setGenre("Networking")}
+              />
             </div>
           </div>
 
@@ -298,13 +477,11 @@ export function EventDetail({
   isAuthed,
   onBack,
   onBuy,
-  onLogin,
 }: {
   ev: Event;
   isAuthed: boolean;
   onBack: () => void;
   onBuy: () => void;
-  onLogin: () => void;
 }) {
   return (
     <div className="pt-10">
@@ -320,7 +497,20 @@ export function EventDetail({
           <span className="text-[11px] text-white/40">ID: {ev.id}</span>
         </div>
 
-        <div className="mt-5 rounded-2xl bg-white/[0.02] ring-1 ring-white/12 backdrop-blur-sm overflow-hidden">
+         <div className="mt-5 overflow-hidden rounded-2xl bg-white/[0.02] ring-1 ring-white/12 backdrop-blur-sm">
+          <div className="relative h-[220px] w-full">
+            <img
+              src={ev.imageUrl}
+              alt={ev.title}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+            {ev.status === "FewLeft" ? (
+              <div className="absolute bottom-4 left-4 rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-black">
+                Son {ev.stockLeft ?? 5} bilet!
+              </div>
+            ) : null}
+          </div>
           <div className="px-6 py-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -333,6 +523,7 @@ export function EventDetail({
                 <div className="mt-1 text-[12px] text-white/55">
                   {formatDateTR(ev.dateISO)} • {ev.time} • {ev.genre}
                 </div>
+                <div className="mt-2 text-[12px] text-white/45">{ev.address}</div>
               </div>
 
               <div className="flex items-center gap-2">
@@ -342,7 +533,6 @@ export function EventDetail({
                 <PillButton
                   variant={ev.status === "SoldOut" ? "ghost" : "primary"}
                   onClick={() => {
-                    if (!isAuthed) return onLogin();
                     onBuy();
                   }}
                   disabled={ev.status === "SoldOut"}
@@ -350,14 +540,14 @@ export function EventDetail({
                   {ev.status === "SoldOut"
                     ? "Tükendi"
                     : isAuthed
-                    ? "Bilet Al"
-                    : "Giriş Yap & Al"}
+                    ? "Hızlı Satın Al"
+                    : "Misafir Satın Al"}
                 </PillButton>
               </div>
             </div>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-12">
-              <div className="sm:col-span-8">
+              <div className="sm:col-span-8 space-y-3">
                 <div className="rounded-2xl bg-black/40 ring-1 ring-white/10 px-5 py-5">
                   <div className="text-[12px] font-medium text-white/85">
                     Açıklama
@@ -367,8 +557,22 @@ export function EventDetail({
                     kapı açılış saati ve ulaşım bilgileri eklenir.
                   </p>
                 </div>
+                <div className="rounded-2xl bg-black/40 ring-1 ring-white/10 px-5 py-5">
+                  <div className="text-[12px] font-medium text-white/85">
+                    Organizator Profili
+                  </div>
+                  <div className="mt-2 text-[12px] font-medium text-white/90">
+                    {ev.organizer.name}
+                  </div>
+                  <p className="mt-2 text-[12px] leading-[1.7] text-white/55">
+                    {ev.organizer.description}
+                  </p>
+                  <div className="mt-3 text-[11px] text-white/60">
+                    {ev.organizer.trustNote}
+                  </div>
+                </div>
               </div>
-              <div className="sm:col-span-4">
+              <div className="sm:col-span-4 space-y-3">
                 <div className="rounded-2xl bg-black/40 ring-1 ring-white/10 px-5 py-5">
                   <div className="text-[12px] font-medium text-white/85">
                     Bilet Tipleri
@@ -379,6 +583,20 @@ export function EventDetail({
                     <TicketRow label="VIP" price={ev.priceFromEUR + 25} />
                   </div>
                 </div>
+<div className="rounded-2xl bg-black/40 ring-1 ring-white/10 px-5 py-5">
+                  <div className="text-[12px] font-medium text-white/85">
+                    Konum
+                  </div>
+                  <div className="mt-2 overflow-hidden rounded-xl ring-1 ring-white/10">
+                    <iframe
+                      title={`${ev.venue} harita`}
+                      src={ev.mapUrl}
+                      className="h-36 w-full"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -416,19 +634,22 @@ export function Checkout({
   open,
   ev,
   onClose,
+  onLogin,
 }: {
   open: boolean;
   ev: Event | null;
   onClose: () => void;
+  onLogin: () => void;
 }) {
   const [qty, setQty] = useState(1);
   const [email, setEmail] = useState("");
+  const [guest, setGuest] = useState(true);
 
   const price = ev?.priceFromEUR ?? 0;
   const total = Math.max(1, qty) * price;
 
   return (
-    <Modal open={open} title="Bilet Satın Al" onClose={onClose}>
+     <Modal open={open} title="Hızlı Satın Al" onClose={onClose}>
       {!ev ? null : (
         <div>
           <div className="rounded-2xl bg-white/[0.02] ring-1 ring-white/12 px-4 py-4">
@@ -473,6 +694,39 @@ export function Checkout({
                 />
               </div>
             </div>
+          </div>
+
+           <div className="mt-4 rounded-2xl bg-white/[0.02] ring-1 ring-white/12 px-4 py-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-[12px] font-medium text-white/85">
+                  Ödeme tipi
+                </div>
+                <div className="mt-1 text-[12px] text-white/55">
+                  Misafir satın alma ile hızlıca tamamlayabilirsin.
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Chip active={guest} label="Misafir" onClick={() => setGuest(true)} />
+                <Chip active={!guest} label="Üye" onClick={() => setGuest(false)} />
+              </div>
+            </div>
+            {!guest ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-white/55">
+                <span>Üye girişi ile biletlerin hesabına aktarılır.</span>
+                <button
+                  type="button"
+                  onClick={onLogin}
+                  className="text-[11px] font-medium text-white/80 hover:text-white/95"
+                >
+                  Giriş yap
+                </button>
+              </div>
+            ) : (
+              <div className="mt-3 text-[11px] text-white/45">
+                Misafir satın almada bilet bilgileri e-postana gönderilir.
+              </div>
+            )}
           </div>
 
           <div className="mt-4 rounded-2xl bg-black/40 ring-1 ring-white/10 px-4 py-4">

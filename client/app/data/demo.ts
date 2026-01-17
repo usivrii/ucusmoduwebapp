@@ -12,11 +12,21 @@ export type Event = {
   title: string;
   city: string;
   venue: string;
+  address:string;
   dateISO: string; // YYYY-MM-DD
   time: string;
-  genre: "Concert" | "Festival" | "Party" | "Comedy";
+  genre: "Music" | "Workshop" | "Party" | "Networking";
   priceFromEUR: number;
   status: "OnSale" | "FewLeft" | "SoldOut";
+  stockLeft?: number;
+  imageUrl: string;
+  mapUrl: string;
+  organizer: {
+    name: string;
+    description: string;
+    trustNote: string;
+  };
+  isPopular?: boolean;
 };
 
 export type Ticket = {
@@ -51,44 +61,83 @@ export const DEMO_EVENTS: Event[] = [
     title: "Uçuş Modu Nights – Berlin",
     city: "Berlin",
     venue: "Astra Kulturhaus",
+    address: "Revaler Str. 99, 10245 Berlin",
     dateISO: "2026-02-21",
     time: "21:00",
     genre: "Party",
     priceFromEUR: 19,
     status: "OnSale",
+    imageUrl: "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1200&auto=format&fit=crop",
+    mapUrl: "https://www.google.com/maps?q=Astra+Kulturhaus+Berlin&output=embed",
+    organizer: {
+      name: "Uçuş Modu Events",
+      description:
+        "Berlin’de gençlik etkinlikleri ve after-party organizasyonlarında uzman ekip.",
+      trustNote: "10+ başarılı organizasyon • 4.8/5 katılımcı memnuniyeti",
+    },
+    isPopular: true,
   },
   {
     id: "ev-hamburg-002",
     title: "Gençlik Konseri: Indie Wave",
     city: "Hamburg",
     venue: "Docks",
+    address: "Spielbudenpl. 19, 20359 Hamburg",
     dateISO: "2026-03-06",
     time: "20:00",
-    genre: "Concert",
+    genre: "Music",
     priceFromEUR: 29,
     status: "FewLeft",
+    stockLeft: 5,
+    imageUrl: "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?q=80&w=1200&auto=format&fit=crop",
+    mapUrl: "https://www.google.com/maps?q=Docks+Hamburg&output=embed",
+    organizer: {
+      name: "Indie Wave Collective",
+      description: "Hamburg’un yükselen indie sahnesini bir araya getirir.",
+      trustNote: "Biletler resmi kanal üzerinden güvenli satılır.",
+    },
+    isPopular: true,
   },
   {
     id: "ev-koln-003",
     title: "Rhein Beats Festival",
     city: "Köln",
     venue: "Tanzbrunnen",
+    address: "Rheinparkweg 1, 50679 Köln",
     dateISO: "2026-05-10",
     time: "14:00",
-    genre: "Festival",
+    genre: "Networking",
     priceFromEUR: 49,
     status: "OnSale",
+    imageUrl: "https://images.unsplash.com/photo-1472653431158-6364773b2a56?q=80&w=1200&auto=format&fit=crop",
+    mapUrl: "https://www.google.com/maps?q=Tanzbrunnen+Koln&output=embed",
+    organizer: {
+      name: "Rhein Beats",
+      description:
+        "Müzik, kültür ve networking buluşmalarını bir araya getiren festival ekibi.",
+      trustNote: "Yerel partnerlerle resmi etkinlik lisansı.",
+    },
+    isPopular: true,
   },
   {
     id: "ev-munich-004",
     title: "Stand-up Night: Yeni Nesil",
     city: "München",
     venue: "Backstage",
+    address: "Reitknechtstraße 6, 80639 München",
     dateISO: "2026-01-30",
     time: "19:30",
-    genre: "Comedy",
+    genre: "Workshop",
     priceFromEUR: 24,
     status: "SoldOut",
+    imageUrl: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=1200&auto=format&fit=crop",
+    mapUrl: "https://www.google.com/maps?q=Backstage+Munich&output=embed",
+    organizer: {
+      name: "München Creator Hub",
+      description:
+        "Komedi ve sahne performanslarına yeni isimler kazandıran yerel platform.",
+      trustNote: "Bilet iadeleri 24 saat içinde güvenle işlenir.",
+    },
   },
 ];
 

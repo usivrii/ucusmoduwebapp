@@ -73,11 +73,6 @@ export default function DemoApp() {
   }
 
   function buyTicket(id: string) {
-    if (!isAuthed) {
-      setCheckoutEventId(id);
-      setLoginOpen(true);
-      return;
-    }
     setCheckoutEventId(id);
     setCheckoutOpen(true);
   }
@@ -95,7 +90,15 @@ export default function DemoApp() {
   const goAccount = (path: AccountRoute = "/account") => setRoute(path);
 
   if (route === "landing") {
-    return <Landing onEnter={goEventsHome} />;
+    return (
+      <Landing
+        onEnter={goEventsHome}
+        events={DEMO_EVENTS}
+        userCity={DEMO_USER.city}
+        onOpenEvent={(id) => openEvent(id)}
+        onBuy={(id) => buyTicket(id)}
+      />
+    );
   }
 
   if (isAccountRoute) {
@@ -164,6 +167,7 @@ export default function DemoApp() {
       {route === "home" ? (
         <EventsHome
           events={DEMO_EVENTS}
+          userCity={DEMO_USER.city}
           onOpenEvent={(id) => openEvent(id)}
           onBuy={(id) => buyTicket(id)}
         />
@@ -173,7 +177,6 @@ export default function DemoApp() {
           isAuthed={isAuthed}
           onBack={() => goEventsHome()}
           onBuy={() => buyTicket(selectedEvent.id)}
-          onLogin={() => setLoginOpen(true)}
         />
       ) : (
         <EventsHome
@@ -201,6 +204,7 @@ export default function DemoApp() {
           setCheckoutOpen(false);
           setCheckoutEventId(null);
         }}
+          onLogin={() => setLoginOpen(true)}
       />
     </Shell>
   );
